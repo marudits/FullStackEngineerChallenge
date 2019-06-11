@@ -18,6 +18,7 @@ const service = {
         },
         getEmployees: () => {
             return knexPg(`${CONSTANTS.DATABASE.SCHEMA.PUBLIC}.${CONSTANTS.DATABASE.TABLE.EMPLOYEES}`)
+                .orderBy('created_at', 'DESC')
                 .then(res => res )
                 .catch(err => {
                     console.error('service: employees: getEmployees: ', err);
