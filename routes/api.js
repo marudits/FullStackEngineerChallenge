@@ -19,8 +19,9 @@ router.delete('/employees/:emp_id', employees.removeEmployee);
 router.put('/employees/:emp_id', employees.updateEmployee);
 
 // API: reviews
+router.get('/reviews', reviews.getReviews);
+router.get('/reviews/:rev_id', reviews.getReviewDetails);
 router.get('/employees/:emp_id/reviews', reviews.getEmployeeReviews);
-router.get('/employees/:emp_id/reviews/:rev_id', reviews.getReviewDetails);
 router.post('/employees/:emp_id/reviews', reviews.addReview);
 router.delete('/employees/:emp_id/reviews/:rev_id', reviews.removeReview);
 router.put('/employees/:emp_id/reviews/:rev_id', reviews.updateReview);

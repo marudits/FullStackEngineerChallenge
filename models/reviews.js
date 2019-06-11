@@ -8,12 +8,14 @@ const reviews = {
     addReview: (req, res) => {
         const { emp_id } = req.params;
 
-        if(!emp_id){
+        let { rate, comments, email } = req.body;
+
+        if(!emp_id || !rate || !comments || !email){
             res.status(400).send(new Envelope(false, { message: CONSTANTS.RESPONSE.CODE['400'] }));
             return;
         }
 
-        res.status(200).send(new Envelope(true, []));
+        res.status(200).send(new Envelope(true, reviews));
     },
     getEmployeeReviews: (req, res) => {
         const { emp_id } = req.params;
@@ -23,6 +25,9 @@ const reviews = {
             return;
         }
 
+        res.status(200).send(new Envelope(true, []));
+    },
+    getReviews: async (req, res) => {
         res.status(200).send(new Envelope(true, []));
     },
     getReviewDetails: (req, res) => {

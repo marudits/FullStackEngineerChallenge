@@ -1,4 +1,13 @@
 const CONSTANTS = {
+    DATABASE: {
+        SCHEMA: {
+            PUBLIC: 'public'
+        },
+        TABLE: {
+            EMPLOYEES: 'employees',
+            REVIEWS: 'reviews'
+        }
+    },
     RESPONSE: {
         CODE: {
             400: 'INVALID_DATA',
