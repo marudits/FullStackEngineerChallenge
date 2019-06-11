@@ -1,0 +1,15 @@
+<template lang="pug">
+    <h1>Page Admin</h1>
+</template>
+
+<script>
+export default {
+    
+}
+</script>
+
+
+<style lang="stylus" scoped>
+
+</style>
+
