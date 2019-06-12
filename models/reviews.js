@@ -52,6 +52,30 @@ const reviews = {
 
         res.status(200).send(new Envelope(true, data));
     },
+    getPendingReviews: async (req, res) => {
+        const { reviewer_id } = req.params;
+
+        if(!reviewer_id){
+            res.status(400).send(new Envelope(false, { message: CONSTANTS.RESPONSE.CODE['400'] }));
+            return;
+        }
+
+        let data = await service.reviews.getReviewsBy({ reviewer_id, rate: null, comment: null })
+            .then(res => {
+                return res;
+            })
+            .catch(err => {
+                return null
+            });
+
+        if(!data){
+            res.status(500).send(new Envelope(false, { message: CONSTANTS.RESPONSE.CODE['500']}));
+            return;
+        }
+
+        res.status(200).send(new Envelope(true, data));
+
+    },
     getReviews: async (req, res) => {
         let data = await service.reviews.getReviews()
             .then(res => {

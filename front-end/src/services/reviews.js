@@ -21,6 +21,10 @@ export const reviewsService = {
         const URL = `${CONSTANTS.API.BASE_URL}${CONSTANTS.API.REVIEWS.ROOT}`;
         return request.get(URL)
     },
+    getPendingReviews: (reviewer_id) => {
+        const URL = `${CONSTANTS.API.BASE_URL}${CONSTANTS.API.REVIEWS.ROOT}`;
+        return request.get(URL)
+    },
     updateReview: (data) => {
         let { uuid } = data;
         delete data['uuid'];
