@@ -1,5 +1,10 @@
 <template lang="pug">
-    <h1>Page Employee</h1>
+    el-container.page-employee
+        el-header
+            h1 Page employee
+        el-main
+            el-row
+                
 </template>
 
 <script>

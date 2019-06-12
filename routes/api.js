@@ -15,16 +15,16 @@ const Envelope = require('../utils/envelope');
 router.get('/employees', employees.getEmployees);
 router.get('/employees/:emp_id', employees.getEmployeeDetails);
 router.post('/employees', employees.addEmployee);
-router.delete('/employees/:emp_id', employees.removeEmployee);
 router.put('/employees/:emp_id', employees.updateEmployee);
+router.delete('/employees/:emp_id', employees.removeEmployee);
 
 // API: reviews
 router.get('/reviews', reviews.getReviews);
 router.get('/reviews/:rev_id', reviews.getReviewDetails);
-router.get('/employees/:emp_id/reviews', reviews.getEmployeeReviews);
-router.post('/employees/:emp_id/reviews', reviews.addReview);
-router.delete('/employees/:emp_id/reviews/:rev_id', reviews.removeReview);
-router.put('/employees/:emp_id/reviews/:rev_id', reviews.updateReview);
+router.post('/reviews/assign', reviews.assignReview);
+router.post('/reviews', reviews.addReview);
+router.put('/reviews/:rev_id', reviews.updateReview);
+router.delete('/reviews/:rev_id', reviews.removeReview);
 
 // default router
 router.get('*', (req, res, next) => {

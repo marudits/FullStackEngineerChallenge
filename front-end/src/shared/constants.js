@@ -5,7 +5,8 @@ const CONSTANTS = {
             ROOT: '/employees'
         },
         REVIEWS: {
-            ROOT: '/reviews'
+            ROOT: '/reviews',
+            ASSIGN: '/reviews/assign'
         }
     }
 }

@@ -34,23 +34,47 @@
                     el-table-column(label="Operations" fixed="right" min-width="150")
                         template(slot-scope="scope") 
                             .operations
-                                <el-button @click="handleAction('dialog-employee-details', scope.row)" icon="el-icon-view" size="medium" circle>
-                                </el-button>
-                                <el-button @click="handleAction('dialog-employee-update', scope.row)" icon="el-icon-edit" size="medium"  type="warning" circle>
-                                </el-button>
-                                <el-button @click="handleAction('dialog-employee-delete', scope.row)" icon="el-icon-delete" size="medium"  type="danger" circle>
-                                </el-button>
+                                el-button(@click="handleAction('dialog-employee-details', scope.row)" icon="el-icon-view" size="medium" circle disabled)
+                                el-button(@click="handleAction('dialog-employee-update', scope.row)" icon="el-icon-edit" size="medium"  type="warning" circle)
+                                el-button(@click="handleAction('dialog-employee-delete', scope.row)" icon="el-icon-delete" size="medium"  type="danger" circle)
 
             el-row.page-admin__review
                 h3 Review Data
+                .actions
+                    el-button(type="success" icon="el-icon-plus" @click="handleAction('dialog-review-add')") Add Review
+                    el-button(type="success" icon="el-icon-plus" @click="handleAction('dialog-review-assign')") Assign Review
                 el-table(
                     :data="list.review"
                     v-loading="loading.list.review"
                     element-loading-text="Fetching data"
                     max-height="400"
                 )
+                    el-table-column(label="No" fixed width="50")
+                        template(slot-scope="scope") 
+                            | {{ scope.$index + 1 }}
+                    el-table-column(label="Reviewer" prop="reviewer_name" sortable fixed min-width="150")
+                        template(slot-scope="scope") 
+                            | {{ scope.row.reviewer_name }}
+                    el-table-column(label="Reviewee" prop="reviewee_name" sortable fixed min-width="150")
+                        template(slot-scope="scope") 
+                            | {{ scope.row.reviewee_name }}
+                    el-table-column(label="Rate" prop="rate" sortable min-width="150")
+                        template(slot-scope="scope") 
+                            | {{ scope.row.rate }}
+                    el-table-column(label="Comment" prop="comment" sortable min-width="150")
+                        template(slot-scope="scope") 
+                            | {{ scope.row.comment }}
+                    el-table-column(label="Created At" prop="created_at" min-width="175")
+                        template(slot-scope="scope") 
+                            | {{ scope.row.created_at | toDateTime }}
+                    el-table-column(label="Operations" fixed="right" min-width="150")
+                        template(slot-scope="scope") 
+                            .operations
+                                el-button(@click="handleAction('dialog-review-details', scope.row)" icon="el-icon-view" size="medium" circle disabled)
+                                el-button(@click="handleAction('dialog-review-update', scope.row)" icon="el-icon-edit" size="medium"  type="warning" circle)
+                                el-button(@click="handleAction('dialog-review-delete', scope.row)" icon="el-icon-delete" size="medium"  type="danger" circle)
 
-        el-dialog(
+        el-dialog.dialog(
             :title="dialog.title"
             :visible.sync="dialog.is_visible"
         )
@@ -103,6 +127,113 @@
                             :disabled="dialog.form.confirm.toLowerCase() !== 'confirm'"
                         )
                             | Delete
+            content(v-if="dialog.type === 'review-assign'")
+                el-form(ref="form" :model="dialog.form")
+                    el-form-item(label="Reviewer")
+                        el-autocomplete(
+                            v-model="dialog.form.reviewer_name"
+                            class="inline-input"
+                            :fetch-suggestions="fetchEmployee"
+                            placeholder="Select Reviewer"
+                            @select="(e) => handleAction('select-review-assign-reviewer', e)"
+                            style="width: 100%"
+                            )
+                    el-form-item(label="Reviewee")
+                        el-autocomplete(
+                            v-model="dialog.form.reviewee_name"
+                            class="inline-input"
+                            :fetch-suggestions="fetchEmployee"
+                            placeholder="Select Reviewee"
+                            @select="(e) => handleAction('select-review-assign-reviewee', e)"
+                            style="width: 100%"
+                            )
+                    el-form-item
+                        el-button(
+                            type="success" 
+                            @click="() => handleAction('confirm-review-assign')"
+                        )
+                            | Assign
+            content(v-if="dialog.type === 'review-add'")
+                el-form(ref="form" :model="dialog.form")
+                    el-form-item(label="Reviewer")
+                        el-autocomplete(
+                            v-model="dialog.form.reviewer_name"
+                            class="inline-input"
+                            :fetch-suggestions="fetchEmployee"
+                            placeholder="Select Reviewer"
+                            @select="(e) => handleAction('select-review-assign-reviewer', e)"
+                            style="width: 100%"
+                            )
+                    el-form-item(label="Reviewee")
+                        el-autocomplete(
+                            v-model="dialog.form.reviewee_name"
+                            class="inline-input"
+                            :fetch-suggestions="fetchEmployee"
+                            placeholder="Select Reviewee"
+                            @select="(e) => handleAction('select-review-assign-reviewee', e)"
+                            style="width: 100%"
+                            )
+                    el-form-item(label="Rate")
+                        .block.rate
+                            el-rate(v-model="dialog.form.rate")
+                    el-form-item(label="Comment")
+                        el-input(type="textarea" v-model="dialog.form.comment")
+                    el-form-item
+                        el-button(
+                            type="success" 
+                            @click="() => handleAction('confirm-review-add')"
+                        )
+                            | Add
+            content(v-if="dialog.type === 'review-update'")
+                el-form(ref="form" :model="dialog.form")
+                    el-form-item(label="Reviewer")
+                        el-autocomplete(
+                            v-model="dialog.form.reviewer_name"
+                            class="inline-input"
+                            :fetch-suggestions="fetchEmployee"
+                            placeholder="Select Reviewer"
+                            @select="(e) => handleAction('select-review-assign-reviewer', e)"
+                            style="width: 100%"
+                            )
+                    el-form-item(label="Reviewee")
+                        el-autocomplete(
+                            v-model="dialog.form.reviewee_name"
+                            class="inline-input"
+                            :fetch-suggestions="fetchEmployee"
+                            placeholder="Select Reviewee"
+                            @select="(e) => handleAction('select-review-assign-reviewee', e)"
+                            style="width: 100%"
+                            )
+                    el-form-item(label="Rate")
+                        .block.rate
+                            el-rate(v-model="dialog.form.rate")
+                    el-form-item(label="Comment")
+                        el-input(type="textarea" v-model="dialog.form.comment")
+                    el-form-item
+                        el-button(
+                            type="warning" 
+                            @click="() => handleAction('confirm-review-update')"
+                        )
+                            | Update
+            content(v-if="dialog.type === 'review-delete'")
+                el-form(ref="form" :model="dialog.form")
+                    el-form-item
+                        p Are you sure to delete review from 
+                            b &nbsp;{{ this.dialog.form.reviewer_name }}
+                            | &nbsp; to 
+                            b &nbsp;{{ this.dialog.form.reviewee_name }} ? 
+                            | Type
+                            b &nbsp;confirm
+                            | &nbsp;to proceed the action
+                    el-form-item
+                        el-input(v-model="dialog.form.confirm" placeholder="Type confirm")
+                    el-form-item
+                        el-button(
+                            type="danger" 
+                            @click="() => handleAction('confirm-review-delete')"
+                            :disabled="dialog.form.confirm.toLowerCase() !== 'confirm'"
+                        )
+                            | Delete
     
 </template>
 
@@ -125,8 +256,11 @@ export default {
     data: () => {
         return {
             list: {
-                employee: null,
-                review: null
+                employee: [],
+                review: [],
+                options: {
+                    employee: []
+                }
             },
             loading: {
                 list: {
@@ -143,6 +277,13 @@ export default {
         }
     },
     methods: {
+        fetchEmployee(query, cb){
+            if(!this.list.options.employee || this.list.options.employee.length < 1){
+                this.loadEmployeeData();
+            }
+            let result = query ? this.list.options.employee.filter(x => x.value.toUpperCase().indexOf(query.toUpperCase()) !== -1) : this.list.options.employee.slice(0, 10);
+            cb(result);
+        },
         handleAction(type, params){
             switch(type){
                 case 'dialog-employee-add':
@@ -184,6 +325,50 @@ export default {
                         }
                     }
                     break;
+                case 'dialog-review-assign':
+                    this.dialog = {
+                        title: 'Review - Assign',
+                        type: 'review-assign',
+                        is_visible: true,
+                        form: {
+                            reviewer_id: null,
+                            reviewer_name: null,
+                            reviewee_id: null,
+                            reviewee_name: null,
+                        }
+                    }
+                    break;
+                case 'dialog-review-add':
+                    this.dialog = {
+                        title: 'Review - Add',
+                        type: 'review-add',
+                        is_visible: true,
+                        form: {
+                            reviewer_id: null,
+                            reviewer_name: null,
+                            reviewee_id: null,
+                            reviewee_name: null,
+                            rate: null,
+                            comment: null
+                        }
+                    }
+                    break;
+                case 'dialog-review-update':
+                    this.dialog = {
+                        title: 'Review - Update',
+                        type: 'review-update',
+                        is_visible: true,
+                        form: params
+                    }
+                    break;
+                case 'dialog-review-delete':
+                    this.dialog = {
+                        title: 'Review - Delete',
+                        type: 'review-delete',
+                        is_visible: true,
+                        form: Object.assign({}, { confirm: '' }, params)
+                    }
+                    break;
                 case 'confirm-employee-add':
                     employeesService.addEmployee(this.dialog.form.name, this.dialog.form.email, this.dialog.form.department, this.dialog.form.position)
                         .then(res => {
@@ -220,6 +405,55 @@ export default {
                             console.error('Failed on ', type, ' : ', err);
                         })
                     break;
+                case 'confirm-review-assign':
+                    reviewsService.assignReview(this.dialog.form.reviewer_id, this.dialog.form.reviewee_id)
+                        .then(res => {
+                            if(res.body.successful && res.body.payload){
+                                this.handleAction('dialog-close');
+                                this.loadReviewData();
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed on ', type, ' : ', err);
+                        })
+                    break;
+                case 'confirm-review-add':
+                    console.log(type, this.dialog.form);
+                    reviewsService.addReview(this.dialog.form.reviewer_id, this.dialog.form.reviewee_id, this.dialog.form.rate, this.dialog.form.comment)
+                        .then(res => {
+                            if(res.body.successful && res.body.payload){
+                                this.handleAction('dialog-close');
+                                this.loadReviewData();
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed on ', type, ' : ', err);
+                        })
+                    break;
+                case 'confirm-review-update':
+                    reviewsService.updateReview(this.dialog.form)
+                        .then(res => {
+                            if(res.body.successful && res.body.payload){
+                                this.handleAction('dialog-close');
+                                this.loadReviewData();
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed on ', type, ' : ', err);
+                        })
+                    break;
+                case 'confirm-review-delete':
+                    reviewsService.deleteReview(this.dialog.form)
+                        .then(res => {
+                            if(res.body.successful && res.body.payload){
+                                this.handleAction('dialog-close');
+                                this.loadReviewData();
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed on ', type, ' : ', err);
+                        })
+                    break;
                 case 'dialog-close':
                     this.dialog = {
                         title: null,
@@ -227,6 +461,14 @@ export default {
                         is_visible: false,
                         form: {}
                     }
+                    break;
+                case 'select-review-assign-reviewee':
+                    this.dialog.form.reviewee_id = params.label;
+                    this.dialog.form.reviewee_name = params.value;
+                    break;
+                case 'select-review-assign-reviewer':
+                    this.dialog.form.reviewer_id = params.label;
+                    this.dialog.form.reviewer_name = params.value;
                     break;
                 default:
                     console.log(type, params);
@@ -241,7 +483,8 @@ export default {
             employeesService.getEmployees()
                 .then(res => {
                     if(res.body.successful && res.body.payload){
-                        this.list.employee = res.body.payload
+                        this.list.employee = res.body.payload;
+                        this.list.options.employee = res.body.payload.map(x => Object.assign({}, { label: x.uuid, value: x.name }))
                     }
 
                     this.loading.list.employee = false;
@@ -274,6 +517,8 @@ export default {
 
 
 <style lang="stylus" scoped>
-
+    .dialog
+        .block.rate
+            margin-top 2.5rem
 </style>
 
