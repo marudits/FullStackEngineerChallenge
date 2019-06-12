@@ -52,15 +52,34 @@ const reviews = {
 
         res.status(200).send(new Envelope(true, data));
     },
-    getPendingReviews: async (req, res) => {
-        const { reviewer_id } = req.params;
+    getReviewsByType: async (req, res) => {
+        const { emp_id, type } = req.params;
 
-        if(!reviewer_id){
+        if(!emp_id || !type){
             res.status(400).send(new Envelope(false, { message: CONSTANTS.RESPONSE.CODE['400'] }));
             return;
         }
 
-        let data = await service.reviews.getReviewsBy({ reviewer_id, rate: null, comment: null })
+        if([CONSTANTS.REVIEWS.TYPE.PENDING, CONSTANTS.REVIEWS.TYPE.REVIEWEE, CONSTANTS.REVIEWS.TYPE.REVIEWER].indexOf(type) === -1){
+            res.status(400).send(new Envelope(false, { message: CONSTANTS.RESPONSE.CODE['400'] }));
+            return;
+        }
+
+        let rawParams = '';
+
+        switch(type){
+            case CONSTANTS.REVIEWS.TYPE.PENDING:
+                rawParams = `reviewer_id = '${emp_id}' AND rate IS NULL and comment IS NULL`;
+                break;
+            case CONSTANTS.REVIEWS.TYPE.REVIEWER:
+                rawParams = `reviewer_id = '${emp_id}' AND rate IS NOT NULL and comment IS NOT NULL`;
+                break;
+            case CONSTANTS.REVIEWS.TYPE.REVIEWEE:
+                rawParams = `reviewee_id = '${emp_id}' AND rate IS NOT NULL and comment IS NOT NULL`;
+                break;
+        }
+
+        let data = await service.reviews.getReviewsBy(rawParams)
             .then(res => {
                 return res;
             })

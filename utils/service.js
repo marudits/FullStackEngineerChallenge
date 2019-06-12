@@ -81,7 +81,6 @@ const service = {
                     r.reviewee_id = e2.uuid
                 ORDER BY
                     r.created_at DESC
-
             `;
             return knexPg.raw(QUERY)
                 .then(res => res && res.rows ? res.rows : null)
@@ -91,10 +90,27 @@ const service = {
                 });
         },
         getReviewsBy: (params) => {
-            return knexPg(`${CONSTANTS.DATABASE.SCHEMA.PUBLIC}.${CONSTANTS.DATABASE.TABLE.REVIEWS}`)
-            .where(params)
-            .orderBy('created_at', 'DESC')
-            .then(res => res)
+            const QUERY = `
+                SELECT 
+                    r.*, e1.name as reviewer_name, e2.name as reviewee_name
+                FROM 
+                    ${CONSTANTS.DATABASE.SCHEMA.PUBLIC}.${CONSTANTS.DATABASE.TABLE.REVIEWS} as r
+                LEFT OUTER JOIN
+                    ${CONSTANTS.DATABASE.SCHEMA.PUBLIC}.${CONSTANTS.DATABASE.TABLE.EMPLOYEES} as e1
+                ON
+                    r.reviewer_id = e1.uuid
+                LEFT OUTER JOIN
+                    ${CONSTANTS.DATABASE.SCHEMA.PUBLIC}.${CONSTANTS.DATABASE.TABLE.EMPLOYEES} as e2
+                ON
+                    r.reviewee_id = e2.uuid
+                WHERE
+                    ${params}
+                ORDER BY
+                    r.created_at DESC
+            `;
+
+            return knexPg.raw(QUERY)
+            .then(res => res && res.rows ? res.rows : null)
             .catch(err => {
                 console.error('service: reviews: getReviewsBy: ', err);
                 return null;

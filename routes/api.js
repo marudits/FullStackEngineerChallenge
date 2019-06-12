@@ -21,7 +21,7 @@ router.delete('/employees/:emp_id', employees.removeEmployee);
 // API: reviews
 router.get('/reviews', reviews.getReviews);
 router.get('/reviews/:rev_id', reviews.getReviewDetails);
-router.get('/reviews/:reviewer_id/pending', reviews.getPendingReviews);
+router.get('/reviews/:emp_id/:type', reviews.getReviewsByType);
 router.post('/reviews/assign', reviews.assignReview);
 router.post('/reviews', reviews.addReview);
 router.put('/reviews/:rev_id', reviews.updateReview);

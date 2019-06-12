@@ -21,8 +21,8 @@ export const reviewsService = {
         const URL = `${CONSTANTS.API.BASE_URL}${CONSTANTS.API.REVIEWS.ROOT}`;
         return request.get(URL)
     },
-    getPendingReviews: (reviewer_id) => {
-        const URL = `${CONSTANTS.API.BASE_URL}${CONSTANTS.API.REVIEWS.ROOT}`;
+    getReviewsByType: (emp_id, type) => {
+        const URL = `${CONSTANTS.API.BASE_URL}${CONSTANTS.API.REVIEWS.ROOT}/${emp_id}/${type}`;
         return request.get(URL)
     },
     updateReview: (data) => {

@@ -15,6 +15,13 @@ const CONSTANTS = {
             404: 'NOT_FOUND',
             500: 'INTERNAL_SERVER_ERROR'
         }
+    },
+    REVIEWS: {
+        TYPE: {
+            PENDING: 'pending',
+            REVIEWEE: 'reviewee',
+            REVIEWER: 'reviewer'
+        }
     }
 }
 
