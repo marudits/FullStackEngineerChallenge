@@ -1,0 +1,13 @@
+Instruction
+
+// clone repo
+git clone {git url}
+
+// Deploy UI
+1. cd ./front-end
+2. npm i
+3. npm run build
+
+// Run BACKEND
+1. move to root folder
+2. npm run start
